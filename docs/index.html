@@ -8,7 +8,7 @@
  <meta name="HandheldFriendly" content="True">
  <meta name="MobileOptimized" content="320">
 
- <title>Google Graph and CSV</title>
+ <title>Графики</title>
  <meta name="description" content="test">
 
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -20,28 +20,77 @@
 </script>
 
 <script type="text/javascript">
-function drawVisualization() {
-   $.get("ifr.csv", function(csvString) {
+google.setOnLoadCallback(() => {
+   $.get("data_11_6.csv", function(csvString) {
       // transform the CSV string into a 2-dimensional array
       var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
+      arrayData = arrayData.slice(Math.max(arrayData.length - 50, 0))
+
+      var index = 0
+
+      for (index = 0; index < arrayData.length; ++index) {
+         let el = arrayData[index]
+         let str_split = el[0].split(";")
+         el = [parseInt(str_split[1].split(":")[0]), parseInt(str_split[2])  ]
+         arrayData[index] = el
+      }
+
+      arrayData.unshift(['Time', 'Value'])
+
 
       // this new DataTable object holds all the data
       var data = new google.visualization.arrayToDataTable(arrayData);
       // CAPACITY - En-route ATFM delay - YY - CHART
       var crt_ertdlyYY = new google.visualization.ChartWrapper({
          chartType: 'LineChart',
-         containerId: 'crt_ertdlyYY',
+         containerId: 'mycsv_1',
          dataTable: data,
          options:{
-            width: 450, height: 160,
-            title: 'EU-wide en-route ATFM delays (year to date)',
-            titleTextStyle : {color: 'grey', fontSize: 11},
+            width: 600, height: 300,
+            title: 'График 1',
+            titleTextStyle : {color: 'black', fontSize: 20},
          }
       });
       crt_ertdlyYY.draw();
    });
-}
-google.setOnLoadCallback(drawVisualization)
+})
+google.setOnLoadCallback(() => {
+   $.get("data_11_6_1.csv", function(csvString) {
+      // transform the CSV string into a 2-dimensional array
+      var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
+      arrayData = arrayData.slice(Math.max(arrayData.length - 50, 0))
+
+      var index = 0
+
+      for (index = 0; index < arrayData.length; ++index) {
+         let el = arrayData[index]
+         let str_split = el[0].split(";")
+         el = [parseInt(str_split[1].split(":")[0]), parseInt(str_split[2])  ]
+         arrayData[index] = el
+      }
+
+      arrayData.unshift(['Time', 'Value'])
+
+      // this new DataTable object holds all the data
+      var data = new google.visualization.arrayToDataTable(arrayData);
+      // CAPACITY - En-route ATFM delay - YY - CHART
+      var crt_ertdlyYY = new google.visualization.ChartWrapper({
+         chartType: 'LineChart',
+         containerId: 'mycsv_2',
+         dataTable: data,
+         options:{
+            width: 600, height: 300,
+            title: 'График 2',
+            titleTextStyle : {color: 'black', fontSize: 20},
+         }
+      });
+      crt_ertdlyYY.draw();
+   });
+})
 </script>
 
-<div id="crt_ertdlyYY"></div>
+</head>
+<body>
+<div id="mycsv_1"></div>
+<div id="mycsv_2"></div>
+</body>
